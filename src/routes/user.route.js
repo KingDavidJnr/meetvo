@@ -13,10 +13,10 @@ router.post("/user/login", userController.login);
 router.get("/user/name/:username", userController.getUserByUsername);
 
 // Check whether username exists
-router.get("/user/username", userController.checkUsername);
+router.post("/user/username", userController.checkUsername);
 
 // Check whether email exists
-router.get("/user/email", userController.checkEmail);
+router.post("/user/email", userController.checkEmail);
 
 // Get user by ID
 router.get("/user/:id", auth.UserProfile, userController.getUserById);
