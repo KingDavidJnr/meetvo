@@ -166,19 +166,34 @@ class UserController {
     }
   }
 
-  // Check if email exists
   async checkEmail(req, res) {
     try {
-      // To be implemented
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          message: "Email is required",
+        });
+      }
+
+      const emailTaken = await userService.emailExists(email.toLowerCase());
+
+      return res.status(emailTaken ? 409 : 200).json({
+        message: emailTaken ? "Email is already in use" : "Email is available",
+        emailTaken,
+      });
     } catch (error) {
-      next(error);
+      console.error("Error checking email", error);
+      return res.status(500).json({
+        message: "Error checking email availability",
+      });
     }
   }
 
   // Check if username exists
   async checkUsername(req, res) {
     try {
-      const { username } = req.query;
+      const { username } = req.body;
 
       if (!username) {
         return res.status(400).json({
@@ -210,36 +225,198 @@ class UserController {
   // Get user by ID
   async getUserById(req, res) {
     try {
-      // To be implemented
+      const userId = req.params.id;
+
+      if (!userId) {
+        return res.status(400).json({
+          message: "User ID is required",
+        });
+      }
+
+      const user = await userService.getUserById(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      // Destructure only the fields you want to return
+      const { user_id, first_name, last_name, email, username, role } = user;
+
+      return res.status(200).json({
+        message: "User fetched successfully",
+        data: {
+          user_id,
+          first_name,
+          last_name,
+          email,
+          username,
+          role,
+        },
+      });
     } catch (error) {
-      next(error);
+      console.error("Error fetching user by ID", error);
+      return res.status(500).json({
+        message: "Error fetching user details",
+      });
     }
   }
 
   // Get user by username
   async getUserByUsername(req, res) {
     try {
-      // To be implemented
+      const { username } = req.params;
+
+      if (!username) {
+        return res.status(400).json({
+          message: "Username is required",
+        });
+      }
+
+      const user = await userService.getUserByUsername(username.toLowerCase());
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      const {
+        user_id,
+        first_name,
+        last_name,
+        email,
+        username: uname,
+        role,
+      } = user;
+
+      return res.status(200).json({
+        message: "User fetched successfully",
+        data: {
+          user_id,
+          first_name,
+          last_name,
+          email,
+          username: uname,
+          role,
+        },
+      });
     } catch (error) {
-      next(error);
+      console.error("Error fetching user by username", error);
+      return res.status(500).json({
+        message: "Error fetching user details",
+      });
     }
   }
 
-  // Update user
   async updateUser(req, res) {
     try {
-      // To be implemented
+      const user_id = req.params.id;
+
+      if (!user_id) {
+        return res.status(400).json({
+          message: "User ID is required",
+        });
+      }
+
+      const allowedFields = ["first_name", "last_name", "email", "username"];
+      const updates = {};
+
+      // Only keep allowed fields
+      for (const field of allowedFields) {
+        if (req.body[field]) {
+          updates[field] = req.body[field];
+        }
+      }
+
+      // Normalize email and username
+      if (updates.username) {
+        updates.username = updates.username.toLowerCase();
+      }
+      if (updates.email) {
+        updates.email = updates.email.toLowerCase();
+      }
+
+      // Username uniqueness check
+      if (updates.username) {
+        const existingUser = await userService.usernameExists(updates.username);
+        if (existingUser && existingUser.user_id !== user_id) {
+          return res.status(409).json({
+            message: "Username is already taken",
+          });
+        }
+      }
+
+      // Confirm user exists
+      const user = await userService.getUserById(user_id);
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      // Apply update
+      const updatedUser = await userService.updateUser(user_id, updates);
+
+      const {
+        user_id: id,
+        first_name,
+        last_name,
+        email,
+        username,
+        role,
+      } = updatedUser;
+
+      return res.status(200).json({
+        message: "User updated successfully",
+        data: {
+          user_id: id,
+          first_name,
+          last_name,
+          email,
+          username,
+          role,
+        },
+      });
     } catch (error) {
-      next(error);
+      console.error("Error updating user", error);
+      return res.status(500).json({
+        message: "Error updating user profile",
+      });
     }
   }
 
   // Delete user
   async deleteUser(req, res) {
     try {
-      // To be implemented
+      const user_id = req.params.id;
+
+      if (!user_id) {
+        return res.status(400).json({
+          message: "User ID is required",
+        });
+      }
+
+      // Check if the user exists
+      const user = await userService.getUserById(user_id);
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      // Proceed to delete the user
+      await userService.deleteUser(user_id);
+
+      return res.status(200).json({
+        message: "User deleted successfully",
+      });
     } catch (error) {
-      next(error);
+      console.error("Error deleting user", error);
+      return res.status(500).json({
+        message: "Error deleting user",
+      });
     }
   }
 }
