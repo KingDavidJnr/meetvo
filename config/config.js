@@ -8,6 +8,7 @@ module.exports = {
     host: process.env.SUPABASE_HOST,
     port: Number(process.env.SUPABASE_PORT),
     dialect: "postgres",
+    logging: false,
     dialectOptions: {
       ssl: {
         require: true,
@@ -22,6 +23,7 @@ module.exports = {
     host: process.env.SUPABASE_HOST,
     port: Number(process.env.SUPABASE_PORT),
     dialect: "postgres",
+    logging: false,
     dialectOptions: {
       ssl: {
         require: true,
@@ -36,6 +38,7 @@ module.exports = {
     host: process.env.SUPABASE_HOST,
     port: Number(process.env.SUPABASE_PORT),
     dialect: "postgres",
+    logging: false,
     dialectOptions: {
       ssl: {
         require: true,
