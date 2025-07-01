@@ -51,6 +51,10 @@ db.RecruiterProfile = require("./recruiterprofile")(sequelize, Sequelize);
 db.EmploymentHistory = require("./employmenthistory")(sequelize, Sequelize);
 db.AcademicHistory = require("./academichistory")(sequelize, Sequelize);
 db.Project = require("./project")(sequelize, Sequelize);
+db.Follow = require("./follow")(sequelize, Sequelize);
+db.Post = require("./post")(sequelize, Sequelize);
+db.Comment = require("./comment")(sequelize, Sequelize);
+db.Like = require("./like")(sequelize, Sequelize);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
