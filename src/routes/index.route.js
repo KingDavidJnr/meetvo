@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
-userRoutes = require("./user.route")
+const userRoutes = require("./user.route");
+const profileRoutes = require("./profile.route");
 
 // Apply user routes
 router.use("/", userRoutes);
+
+// Apply Profile routes
+router.use("/", profileRoutes);
 
 // Export the router to be used in the main server file
 module.exports = router;

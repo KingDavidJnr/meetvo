@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Skill",
       tableName: "skills",
+      underscored: true,
     }
   );
 
