@@ -56,6 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "EmploymentHistory",
       tableName: "employment_histories",
       timestamps: true,
+      underscored: true,
     }
   );
 

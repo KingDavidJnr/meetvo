@@ -76,26 +76,31 @@ class ProfileService {
   async getProfileByUsername(username) {
     const user = await User.findOne({
       where: { username },
-      attributes: ["id", "first_name", "last_name", "username"],
+      attributes: ["user_id", "first_name", "last_name", "username"],
       include: [
         {
           model: Profile,
+          as: "profile",
           attributes: { exclude: ["id", "user_id", "createdAt", "updatedAt"] },
         },
         {
           model: Skill,
+          as: "skills",
           attributes: ["skill_id", "name"],
         },
         {
           model: EmploymentHistory,
+          as: "employmentHistories",
           attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
         },
         {
           model: AcademicHistory,
+          as: "academicHistories",
           attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
         },
         {
           model: Project,
+          as: "projects",
           attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
         },
       ],

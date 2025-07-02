@@ -90,7 +90,31 @@ class ProfileController {
   async addEmploymentHistory(req, res) {
     try {
       const user_id = extractUserId(req);
-      const data = req.body;
+      const { company, position, description, start_date, end_date } = req.body;
+
+      // Parse and validate dates
+      const parsedStartDate = new Date(start_date);
+      const parsedEndDate = end_date ? new Date(end_date) : null;
+
+      if (isNaN(parsedStartDate.getTime())) {
+        return res.status(400).json({
+          message: "Invalid start_date format. Use YYYY-MM-DD.",
+        });
+      }
+
+      if (end_date && isNaN(parsedEndDate.getTime())) {
+        return res.status(400).json({
+          message: "Invalid end_date format. Use YYYY-MM-DD.",
+        });
+      }
+
+      const data = {
+        company,
+        position,
+        description,
+        start_date: parsedStartDate,
+        end_date: parsedEndDate,
+      };
 
       const history = await profileService.addEmploymentHistory(user_id, data);
 
@@ -129,18 +153,19 @@ class ProfileController {
   async addAcademicHistory(req, res) {
     try {
       const user_id = extractUserId(req);
-      const { institution, degree, description, start_year, end_year } =
-        req.body;
+      const data = req.body;
 
-      const data = {
-        institution,
-        degree,
-        description,
-        start_year,
-        end_year,
+      // Convert year fields properly
+      const sanitizedData = {
+        ...data,
+        start_year: data.start_year ? parseInt(data.start_year, 10) : null,
+        end_year: data.end_year ? parseInt(data.end_year, 10) : null,
       };
 
-      const record = await profileService.addAcademicHistory(user_id, data);
+      const record = await profileService.addAcademicHistory(
+        user_id,
+        sanitizedData
+      );
 
       return res.status(201).json({
         message: "Academic history added successfully",

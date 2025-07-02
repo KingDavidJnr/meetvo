@@ -60,4 +60,23 @@ db.Skill = require("./skill")(sequelize, Sequelize);
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// After importing/initializing all models as you did:
+
+db.User.hasOne(db.Profile, { foreignKey: "user_id", as: "profile" });
+db.Profile.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
+db.User.hasMany(db.Skill, { foreignKey: "user_id", as: "skills" });
+db.Skill.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
+db.User.hasMany(db.EmploymentHistory, { foreignKey: "user_id", as: "employmentHistories" });
+db.EmploymentHistory.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
+db.User.hasMany(db.AcademicHistory, { foreignKey: "user_id", as: "academicHistories" });
+db.AcademicHistory.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
+db.User.hasMany(db.Project, { foreignKey: "user_id", as: "projects" });
+db.Project.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
+// Continue with other models associations if any
+
 module.exports = db;
