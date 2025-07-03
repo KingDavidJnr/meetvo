@@ -21,8 +21,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "*",
-    credentials: true,
+    origin: [
+      "https://meetvo.vercel.app",
+      "https://meetvo-tech.lovable.app",
+      "http://localhost:3000",
+    ],
+    credentials: true, // Allow cookies and authentication headers
   })
 ); // Enable Cross-Origin Resource Sharing (CORS)
 
