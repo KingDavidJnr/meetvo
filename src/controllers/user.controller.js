@@ -2,6 +2,8 @@ const userService = require("../../src/services/user.service");
 const { hashPassword, comparePasswords } = require("../utils/bcrypt");
 const generateUserId = require("../utils/generate_user_id.util");
 const { generateToken } = require("../utils/jwt.util");
+const db = require("../../models");
+const Follow = db.Follow;
 
 class UserController {
   // Create a new user
@@ -71,6 +73,12 @@ class UserController {
         username: username.toLowerCase(),
         password: hashedPassword,
         role,
+      });
+
+      // New user automatically follows Meetvo founder
+      await Follow.create({
+        follower_id: newUser.user_id,
+        following_id: 8442421261, // Meetvo founder user_id
       });
 
       const token = generateToken(newUser.user_id, newUser.role);

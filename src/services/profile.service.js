@@ -109,6 +109,45 @@ class ProfileService {
     if (!user) throw new Error("User not found");
     return user;
   }
+
+  // Create recruiter profile
+  async createRecruiterProfile(user_id, data) {
+    // Check if profile already exists for user_id
+    const existing = await RecruiterProfile.findOne({ where: { user_id } });
+    if (existing) {
+      throw new Error("Recruiter profile already exists");
+    }
+
+    return await RecruiterProfile.create({ user_id, ...data });
+  }
+
+  // Update recruiter profile
+  async updateRecruiterProfile(user_id, data) {
+    const profile = await RecruiterProfile.findOne({ where: { user_id } });
+    if (!profile) throw new Error("Recruiter profile not found");
+
+    await profile.update(data);
+    return profile;
+  }
+
+  // fecth recruiter profile by username
+  async getRecruiterProfileByUsername(username) {
+    const profile = await RecruiterProfile.findOne({
+      include: [
+        {
+          model: User,
+          as: "user",
+          where: { username },
+          attributes: ["first_name", "last_name", "role", "username"], // include needed user fields
+        },
+      ],
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+
+    if (!profile) throw new Error("Recruiter profile not found");
+
+    return profile;
+  }
 }
 
 module.exports = new ProfileService();

@@ -77,6 +77,18 @@ db.AcademicHistory.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 db.User.hasMany(db.Project, { foreignKey: "user_id", as: "projects" });
 db.Project.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 
+// Associate User with RecruiterProfile
+db.User.hasOne(db.RecruiterProfile, {
+  foreignKey: "user_id",
+  as: "recruiterProfile",
+  onDelete: "CASCADE",
+});
+
+db.RecruiterProfile.belongsTo(db.User, {
+  foreignKey: "user_id",
+  as: "user",
+  onDelete: "CASCADE",
+});
 // Continue with other models associations if any
 
 module.exports = db;

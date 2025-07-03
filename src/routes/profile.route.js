@@ -42,4 +42,19 @@ router.delete("/profile/project/:project_id", ProfileController.deleteProject);
 // route to fetch user profile by username
 router.get("/profile/user/:username", ProfileController.getProfileByUsername);
 
+// route to create Recruiter profile
+router.post("/profile/recruiter", ProfileController.createRecruiterProfile);
+
+// route to update Recruiter profile
+router.patch(
+  "/profile/recruiter/update",
+  ProfileController.updateRecruiterProfile
+);
+
+// route to fetch recruiter profile by username
+router.get(
+  "/profile/recruiter/:username",
+  ProfileController.getRecruiterProfile
+);
+
 module.exports = router;

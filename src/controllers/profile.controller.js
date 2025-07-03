@@ -1,5 +1,7 @@
 const profileService = require("../services/profile.service");
 const { extractUserId } = require("../utils/auth.util");
+const db = require("../../models");
+const User = db.User;
 
 class ProfileController {
   // 1. Create profile
@@ -7,6 +9,18 @@ class ProfileController {
     try {
       const user_id = extractUserId(req);
       if (!user_id) return res.status(401).json({ message: "Unauthorized" });
+
+      const user = await User.findByPk(user_id);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.role !== "techie") {
+        return res
+          .status(403)
+          .json({ message: "Only techies can create techie profiles!" });
+      }
 
       const profile = await profileService.createProfile(user_id, req.body);
 
@@ -254,6 +268,86 @@ class ProfileController {
       console.error("Error fetching profile:", error);
       return res.status(500).json({
         message: "Something went wrong",
+      });
+    }
+  }
+
+  // create profile for recruiter
+  async createRecruiterProfile(req, res) {
+    try {
+      const user_id = extractUserId(req);
+
+      const user = await User.findByPk(user_id);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.role !== "recruiter") {
+        return res
+          .status(403)
+          .json({ message: "Only recruiters can create recruiter profiles!" });
+      }
+
+      const data = req.body;
+
+      const profile = await profileService.createRecruiterProfile(
+        user_id,
+        data
+      );
+
+      return res.status(201).json({
+        message: "Recruiter profile created successfully",
+        data: profile,
+      });
+    } catch (error) {
+      console.error("Error creating recruiter profile:", error);
+      return res.status(500).json({
+        message: "Something went wrong",
+      });
+    }
+  }
+
+  // update recruiter profile
+  async updateRecruiterProfile(req, res) {
+    try {
+      const user_id = extractUserId(req);
+      const data = req.body;
+
+      const updatedProfile = await profileService.updateRecruiterProfile(
+        user_id,
+        data
+      );
+
+      return res.status(200).json({
+        message: "Recruiter profile updated successfully",
+        data: updatedProfile,
+      });
+    } catch (error) {
+      console.error("Error updating recruiter profile:", error);
+      return res.status(500).json({
+        message: "Something went wrong",
+      });
+    }
+  }
+
+  // fetch recruiter profile by username
+  async getRecruiterProfile(req, res) {
+    try {
+      const username = req.params.username;
+
+      const profile = await profileService.getRecruiterProfileByUsername(
+        username
+      );
+
+      return res.status(200).json({
+        message: "Recruiter profile fetched successfully",
+        data: profile,
+      });
+    } catch (error) {
+      console.error("Error fetching recruiter profile:", error);
+      return res.status(500).json({
+        message: "Error fecthing recruiter profile",
       });
     }
   }
