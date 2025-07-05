@@ -97,6 +97,7 @@ class UserController {
         first_name: newUser.first_name,
         last_name: newUser.last_name,
         email: newUser.email,
+        username: newUser.username,
         role: newUser.role,
         is_verified: newUser.is_verified,
       };
