@@ -56,6 +56,7 @@ db.Post = require("./post")(sequelize, Sequelize);
 db.Comment = require("./comment")(sequelize, Sequelize);
 db.Like = require("./like")(sequelize, Sequelize);
 db.Skill = require("./skill")(sequelize, Sequelize);
+db.Notification = require("./notification")(sequelize, Sequelize);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
@@ -68,10 +69,16 @@ db.Profile.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 db.User.hasMany(db.Skill, { foreignKey: "user_id", as: "skills" });
 db.Skill.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 
-db.User.hasMany(db.EmploymentHistory, { foreignKey: "user_id", as: "employmentHistories" });
+db.User.hasMany(db.EmploymentHistory, {
+  foreignKey: "user_id",
+  as: "employmentHistories",
+});
 db.EmploymentHistory.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 
-db.User.hasMany(db.AcademicHistory, { foreignKey: "user_id", as: "academicHistories" });
+db.User.hasMany(db.AcademicHistory, {
+  foreignKey: "user_id",
+  as: "academicHistories",
+});
 db.AcademicHistory.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 
 db.User.hasMany(db.Project, { foreignKey: "user_id", as: "projects" });
