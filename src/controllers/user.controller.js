@@ -100,6 +100,7 @@ class UserController {
         username: newUser.username,
         role: newUser.role,
         is_verified: newUser.is_verified,
+        blue_tick: newUser.blue_tick,
       };
 
       return res.status(201).json({
@@ -160,6 +161,7 @@ class UserController {
         username: user.username,
         role: user.role,
         is_verified: user.is_verified,
+        blue_tick: user.blue_tick,
         last_active: user.last_activity,
       };
 

@@ -7,6 +7,7 @@ const AcademicHistory = db.AcademicHistory;
 const Project = db.Project;
 const RecruiterProfile = db.RecruiterProfile;
 const Post = db.Post;
+const Follow = db.Follow;
 const { Op } = require("sequelize");
 
 class ProfileService {
@@ -72,11 +73,16 @@ class ProfileService {
     await Project.destroy({ where: { user_id, id } });
   }
 
-  // 11. Get Public Profile By Username
   async getProfileByUsername(username) {
     const user = await User.findOne({
       where: { username },
-      attributes: ["user_id", "first_name", "last_name", "username"],
+      attributes: [
+        "user_id",
+        "first_name",
+        "last_name",
+        "username",
+        "blue_tick",
+      ],
       include: [
         {
           model: Profile,
@@ -107,7 +113,28 @@ class ProfileService {
     });
 
     if (!user) throw new Error("User not found");
-    return user;
+
+    // Manual sorting (most recent first) based on start_date
+    user.employmentHistories.sort(
+      (a, b) => new Date(b.start_date) - new Date(a.start_date)
+    );
+    user.academicHistories.sort(
+      (a, b) => new Date(b.start_date) - new Date(a.start_date)
+    );
+
+    const followerCount = await Follow.count({
+      where: { following_id: user.user_id },
+    });
+
+    const followingCount = await Follow.count({
+      where: { follower_id: user.user_id },
+    });
+
+    const userData = user.toJSON();
+    userData.followerCount = followerCount;
+    userData.followingCount = followingCount;
+
+    return userData;
   }
 
   // Create recruiter profile
@@ -138,7 +165,14 @@ class ProfileService {
           model: User,
           as: "user",
           where: { username },
-          attributes: ["first_name", "last_name", "role", "username"], // include needed user fields
+          attributes: [
+            "user_id", // for counting followers and following
+            "first_name",
+            "last_name",
+            "role",
+            "username",
+            "blue_tick",
+          ],
         },
       ],
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -146,7 +180,23 @@ class ProfileService {
 
     if (!profile) throw new Error("Recruiter profile not found");
 
-    return profile;
+    const userId = profile.user.user_id;
+
+    // Count followers (users who follow this user)
+    const followerCount = await Follow.count({
+      where: { following_id: userId },
+    });
+
+    // Count following (users this user follows)
+    const followingCount = await Follow.count({
+      where: { follower_id: userId },
+    });
+
+    const profileJson = profile.toJSON();
+    profileJson.followerCount = followerCount;
+    profileJson.followingCount = followingCount;
+
+    return profileJson;
   }
 }
 
