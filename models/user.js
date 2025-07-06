@@ -59,6 +59,12 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: false,
       },
 
+      blue_tick: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+
       last_login: {
         type: DataTypes.DATE,
       },

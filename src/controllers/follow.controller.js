@@ -89,6 +89,24 @@ class FollowController {
       return res.status(500).json({ messaage: "Error fetching follower list" });
     }
   }
+
+  async checkIsFollowing(req, res) {
+    try {
+      const follower_id = extractUserId(req);
+      const { following_id } = req.params;
+
+      const follow = await followService.isFollowing(follower_id, following_id);
+
+      if (follow) {
+        return res.status(200).json({ isFollowing: true });
+      } else {
+        return res.status(200).json({ isFollowing: false });
+      }
+    } catch (error) {
+      console.error("Error checking follow status", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
 
 module.exports = new FollowController();

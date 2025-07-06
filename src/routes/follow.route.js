@@ -14,4 +14,7 @@ router.get("/follow/followers", FollowController.getFollowers);
 // route to fetch following list
 router.get("/follow/following", FollowController.getFollowing);
 
+// route to check if user is following another user
+router.get("/follow/:following_id/check", FollowController.checkIsFollowing);
+
 module.exports = router;
