@@ -25,6 +25,8 @@ app.use(
       "https://meetvo.vercel.app",
       "https://meetvo-tech.lovable.app",
       "http://localhost:3000",
+      "https://meetvo.me",
+      "http://localhost:8181",
     ],
     credentials: true, // Allow cookies and authentication headers
   })
