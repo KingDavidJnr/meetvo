@@ -44,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      is_edited: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

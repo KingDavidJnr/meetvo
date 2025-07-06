@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.Profile, { foreignKey: "user_id", as: "profile" });
 
       User.hasOne(models.RecruiterProfile, { foreignKey: "user_id" });
+
+      User.hasMany(models.Post, { foreignKey: "user_id" });
     }
   }
 

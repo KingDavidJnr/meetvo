@@ -98,4 +98,19 @@ db.RecruiterProfile.belongsTo(db.User, {
 });
 // Continue with other models associations if any
 
+db.User.hasMany(db.Post, { foreignKey: "user_id", as: "posts" });
+db.Post.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
+// Post has many Comments
+db.Post.hasMany(db.Comment, { foreignKey: "post_id", as: "comments" });
+db.Comment.belongsTo(db.Post, { foreignKey: "post_id", as: "post" });
+
+// Post has many Likes
+db.Post.hasMany(db.Like, { foreignKey: "post_id", as: "likes" });
+db.Like.belongsTo(db.Post, { foreignKey: "post_id", as: "post" });
+
+// Comment belongs to a User
+db.User.hasMany(db.Comment, { foreignKey: "user_id", as: "comments" });
+db.Comment.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
 module.exports = db;
