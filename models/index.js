@@ -73,6 +73,7 @@ db.User.hasMany(db.EmploymentHistory, {
   foreignKey: "user_id",
   as: "employmentHistories",
 });
+
 db.EmploymentHistory.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 
 db.User.hasMany(db.AcademicHistory, {
@@ -112,5 +113,12 @@ db.Like.belongsTo(db.Post, { foreignKey: "post_id", as: "post" });
 // Comment belongs to a User
 db.User.hasMany(db.Comment, { foreignKey: "user_id", as: "comments" });
 db.Comment.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
+
+// Follow associations
+db.User.hasMany(db.Follow, { foreignKey: "follower_id", as: "followingList" });
+db.User.hasMany(db.Follow, { foreignKey: "following_id", as: "followerList" });
+
+db.Follow.belongsTo(db.User, { foreignKey: "follower_id", as: "follower" });
+db.Follow.belongsTo(db.User, { foreignKey: "following_id", as: "following" });
 
 module.exports = db;
